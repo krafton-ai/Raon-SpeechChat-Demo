@@ -1,0 +1,62 @@
+# Public base image. For different CUDA/PyTorch versions, see:
+# https://hub.docker.com/r/pytorch/pytorch/tags
+ARG BASE_IMAGE=pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
+FROM ${BASE_IMAGE}
+
+WORKDIR /app
+
+ARG PIP_INDEX_URL=https://pypi.org/simple
+ENV PIP_INDEX_URL=${PIP_INDEX_URL}
+
+COPY requirements.txt /app/Raon-SpeechChat-Demo/requirements.txt
+
+RUN bash -lc '\
+    mkdir -p /root/.cache/huggingface /root/.cache/modelscope && \
+    export PIP_DISABLE_PIP_VERSION_CHECK=1 && \
+    export PIP_BREAK_SYSTEM_PACKAGES=1 && \
+    pip_install_compat() { \
+      local rc=0; \
+      python3 -m pip install "$@" || rc=$?; \
+      if [[ "$rc" -ne 0 ]]; then \
+        python3 -m pip install --break-system-packages "$@"; \
+      fi; \
+    } && \
+    pip_install_compat -r /app/Raon-SpeechChat-Demo/requirements.txt && \
+    pip_install_compat --upgrade sglang==0.5.9 && \
+    python3 -c "import sglang; print(\"sglang\", sglang.__version__)" \
+'
+
+RUN apt-get update && apt-get install -y --no-install-recommends git libnuma1 && rm -rf /var/lib/apt/lists/*
+
+RUN bash -lc '\
+    export PIP_DISABLE_PIP_VERSION_CHECK=1 && \
+    export PIP_BREAK_SYSTEM_PACKAGES=1 && \
+    pip_install_compat() { \
+      local rc=0; \
+      python3 -m pip install "$@" || rc=$?; \
+      if [[ "$rc" -ne 0 ]]; then \
+        python3 -m pip install --break-system-packages "$@"; \
+      fi; \
+    } && \
+    pip_install_compat --no-deps speechbrain==1.0.1 python-dotenv soundfile && \
+    pip_install_compat hyperpyyaml && \
+    pip_install_compat "raon @ git+https://github.com/krafton-ai/Raon-Speech.git" \
+'
+
+RUN python3 -c "import torchaudio; setattr(torchaudio, 'list_audio_backends', getattr(torchaudio, 'list_audio_backends', lambda: [])); setattr(torchaudio, 'set_audio_backend', getattr(torchaudio, 'set_audio_backend', lambda _backend: None)); from speechbrain.inference.speaker import EncoderClassifier"
+
+COPY scripts/ /app/Raon-SpeechChat-Demo/scripts/
+COPY launch_worker.py /app/Raon-SpeechChat-Demo/launch_worker.py
+COPY proto/ /app/Raon-SpeechChat-Demo/proto/
+COPY router/ /app/Raon-SpeechChat-Demo/router/
+COPY worker/ /app/Raon-SpeechChat-Demo/worker/
+COPY raon_runtime/ /app/Raon-SpeechChat-Demo/raon_runtime/
+COPY data/ /app/Raon-SpeechChat-Demo/data/
+
+ENV PYTHONPATH=/app/Raon-SpeechChat-Demo
+
+# Ray GCS (6379), Ray client server (10001), Ray dashboard (8265)
+EXPOSE 6379 10001 8265
+
+ENTRYPOINT ["/app/Raon-SpeechChat-Demo/scripts/entrypoint.sh"]
+CMD ["--role", "head"]

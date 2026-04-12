@@ -1,0 +1,216 @@
+/* ============================================================
+   Tahoe Design System — CSS Variables & Base Styles
+   ============================================================ */
+
+/* ---------- Light mode (default) ---------- */
+:root {
+  /* Backgrounds */
+  --tahoe-bg-primary:       rgba(255, 255, 255, 0.72);
+  --tahoe-bg-secondary:     rgba(245, 245, 247, 0.6);
+  --tahoe-bg-glass:         rgba(255, 255, 255, 0.45);
+  --tahoe-bg-glass-hover:   rgba(255, 255, 255, 0.6);
+  --tahoe-bg-glass-active:  rgba(255, 255, 255, 0.75);
+
+  /* Borders */
+  --tahoe-border-glass:     rgba(255, 255, 255, 0.3);
+  --tahoe-border-subtle:    rgba(0, 0, 0, 0.06);
+
+  /* Text */
+  --tahoe-text-primary:     rgba(0, 0, 0, 0.88);
+  --tahoe-text-secondary:   rgba(0, 0, 0, 0.56);
+  --tahoe-text-tertiary:    rgba(0, 0, 0, 0.36);
+
+  /* Accent */
+  --tahoe-accent:           #0071e3;
+  --tahoe-accent-hover:     #0077ed;
+  --tahoe-accent-light:     rgba(0, 113, 227, 0.12);
+
+  /* Semantic */
+  --tahoe-danger:           #ff3b30;
+  --tahoe-success:          #34c759;
+  --tahoe-warning:          #ff9f0a;
+
+  /* Typography — prefer Next.js-loaded font variables, fallback to system stack */
+  --tahoe-font-sans:  var(--font-inter, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif);
+  --tahoe-font-mono:  var(--font-jetbrains-mono, 'JetBrains Mono', 'Fira Code', 'Fira Mono', 'Cascadia Code', Menlo, Consolas, monospace);
+
+  /* Font sizes */
+  --tahoe-text-xs:   0.75rem;
+  --tahoe-text-sm:   0.8125rem;
+  --tahoe-text-base: 0.9375rem;
+  --tahoe-text-lg:   1.0625rem;
+  --tahoe-text-xl:   1.25rem;
+  --tahoe-text-2xl:  1.5rem;
+
+  /* Spacing */
+  --tahoe-space-xs:  4px;
+  --tahoe-space-sm:  8px;
+  --tahoe-space-md:  12px;
+  --tahoe-space-lg:  16px;
+  --tahoe-space-xl:  24px;
+  --tahoe-space-2xl: 32px;
+
+  /* Border radius */
+  --tahoe-radius-sm:   8px;
+  --tahoe-radius-md:   12px;
+  --tahoe-radius-lg:   16px;
+  --tahoe-radius-xl:   20px;
+  --tahoe-radius-full: 9999px;
+
+  /* Blur */
+  --tahoe-blur-sm:  8px;
+  --tahoe-blur-md:  16px;
+  --tahoe-blur-lg:  24px;
+  --tahoe-blur-xl:  40px;
+
+  /* Shadows — light */
+  --tahoe-shadow-sm:    0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --tahoe-shadow-md:    0 4px 12px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.05);
+  --tahoe-shadow-lg:    0 12px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  --tahoe-shadow-glass: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06),
+                        inset 0 1px 0 rgba(255,255,255,0.6);
+
+  /* Transitions */
+  --tahoe-transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tahoe-transition-base:   250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tahoe-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Layout */
+  --sidebar-width:  280px;
+  --header-height:  52px;
+}
+
+/* ---------- Dark mode ---------- */
+.dark {
+  /* Backgrounds */
+  --tahoe-bg-primary:       rgba(30, 30, 32, 0.85);
+  --tahoe-bg-secondary:     rgba(24, 24, 27, 0.7);
+  --tahoe-bg-glass:         rgba(40, 40, 45, 0.5);
+  --tahoe-bg-glass-hover:   rgba(50, 50, 56, 0.65);
+  --tahoe-bg-glass-active:  rgba(60, 60, 68, 0.75);
+
+  /* Borders */
+  --tahoe-border-glass:     rgba(255, 255, 255, 0.08);
+  --tahoe-border-subtle:    rgba(255, 255, 255, 0.06);
+
+  /* Text */
+  --tahoe-text-primary:     rgba(255, 255, 255, 0.92);
+  --tahoe-text-secondary:   rgba(255, 255, 255, 0.56);
+  --tahoe-text-tertiary:    rgba(255, 255, 255, 0.32);
+
+  /* Accent */
+  --tahoe-accent:           #60a5fa;
+  --tahoe-accent-hover:     #93c5fd;
+  --tahoe-accent-light:     rgba(96, 165, 250, 0.15);
+
+  /* Semantic */
+  --tahoe-danger:           #ff6b6b;
+  --tahoe-success:          #4ade80;
+  --tahoe-warning:          #fbbf24;
+
+  /* Shadows — dark */
+  --tahoe-shadow-sm:    0 1px 3px rgba(0,0,0,0.3),  0 1px 2px rgba(0,0,0,0.2);
+  --tahoe-shadow-md:    0 4px 12px rgba(0,0,0,0.4),  0 2px 4px rgba(0,0,0,0.2);
+  --tahoe-shadow-lg:    0 12px 32px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.25);
+  --tahoe-shadow-glass: 0 8px 32px rgba(0,0,0,0.4),  0 2px 8px rgba(0,0,0,0.25),
+                        inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ---------- Body gradient ---------- */
+body {
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+:root body,
+html:not(.dark) body {
+  background-image: linear-gradient(
+    145deg,
+    #f5f5f7 0%,
+    #e8ecf1 35%,
+    #dfe6ed 65%,
+    #eaedf1 100%
+  );
+}
+
+.dark body {
+  background-image: linear-gradient(
+    145deg,
+    #09090b 0%,
+    #111318 35%,
+    #151922 65%,
+    #0f0f12 100%
+  );
+}
+
+/* ---------- Scrollbar — light ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: var(--tahoe-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+/* Scrollbar — dark */
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- Keyframe animations ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--tahoe-accent), 0.5);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(var(--tahoe-accent), 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--tahoe-accent), 0);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

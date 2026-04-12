@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+websockets<14
+wsproto
+ray[default]==2.54.1
+numpy
+
+# torch is expected from the base environment
+# sglang is expected from the base environment

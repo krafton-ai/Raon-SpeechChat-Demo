@@ -1,0 +1,99 @@
+services:
+  # ── GPU Worker (Ray head node) ─────────────────────────────
+  fd-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: raon-speechchat-demo-worker:latest
+    entrypoint: ["/app/Raon-SpeechChat-Demo/scripts/entrypoint.sh"]
+    command:
+      - --role
+      - head
+      - --gpu-ids
+      - ${FD_GPU_IDS:-0}
+      - --max-sessions-per-gpu
+      - ${FD_MAX_SESSIONS_PER_GPU:-2}
+    volumes:
+      - model-cache:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    shm_size: "16gb"
+    environment:
+      - MODEL_PATH=${MODEL_PATH:-}
+      - HF_MODEL_ID=${HF_MODEL_ID:-KRAFTON/Raon-SpeechChat-9B}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - DEFAULT_SPEAKER_AUDIO_PATH=/app/Raon-SpeechChat-Demo/data/raon.wav
+      - DEFAULT_SPEAKER_LABEL=raon_f_fixed
+      - FD_GPU_IDS=${FD_GPU_IDS:-0}
+      - FD_MAX_SESSIONS_PER_GPU=${FD_MAX_SESSIONS_PER_GPU:-2}
+      - FD_ROUTER_RESERVED_TTL=15
+      - FD_MAX_DECODE_FRAMES_PER_CALL=1
+      - FD_ENABLE_COMPILE_AUDIO_MODULES=1
+      - RAY_ENABLE_WINDOWS_OR_OSX_CLUSTER=1
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python3 -c "import ray; ray.init(address='localhost:6379', namespace='default',
+          ignore_reinit_error=True); router = ray.get_actor('fd_router'); status =
+          ray.get(router.status.remote()); healthy = int(status.get('healthy_worker_count', 0));
+          print({'healthy_worker_count': healthy}); raise SystemExit(0 if healthy > 0 else 1)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 2400s
+    restart: unless-stopped
+    networks:
+      - fd-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ── CPU Gateway (WebSocket + frontend) ─────────────────────
+  fd-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    image: raon-speechchat-demo-gateway:latest
+    ports:
+      - "8082:8080"
+    environment:
+      - RAY_ADDRESS=ray://fd-worker:10001
+      - GATEWAY_PROTO=${GATEWAY_PROTO:-https}
+    depends_on:
+      fd-worker:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python3 -c "import sys, json, urllib.request, ssl;
+          ctx = ssl.create_default_context(); ctx.check_hostname = False; ctx.verify_mode = ssl.CERT_NONE;
+          r = urllib.request.urlopen('https://127.0.0.1:8080/health', timeout=5, context=ctx);
+          d = json.loads(r.read()); sys.exit(0 if d.get('status') == 'ok' else 1)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - fd-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+volumes:
+  model-cache:
+
+networks:
+  fd-net:
+    driver: bridge

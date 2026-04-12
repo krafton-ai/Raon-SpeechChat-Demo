@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+
+# Copy gateway-only requirements first for layer caching
+COPY requirements.gateway.txt /app/Raon-SpeechChat-Demo/requirements.gateway.txt
+RUN pip install --no-cache-dir -r /app/Raon-SpeechChat-Demo/requirements.gateway.txt
+
+# Copy the modules needed by the gateway. The gateway imports session leak
+# helpers from worker/, so keep that package available in the runtime image.
+COPY gateway/          /app/Raon-SpeechChat-Demo/gateway/
+COPY proto/            /app/Raon-SpeechChat-Demo/proto/
+COPY worker/           /app/Raon-SpeechChat-Demo/worker/
+COPY launch_gateway.py /app/Raon-SpeechChat-Demo/launch_gateway.py
+
+# Copy frontend static assets
+COPY frontend-next/out/ /app/Raon-SpeechChat-Demo/frontend-next/out/
+
+# Copy gateway entrypoint
+COPY scripts/entrypoint_gateway.sh /app/Raon-SpeechChat-Demo/scripts/entrypoint_gateway.sh
+RUN chmod +x /app/Raon-SpeechChat-Demo/scripts/entrypoint_gateway.sh
+
+ENV PYTHONPATH=/app/Raon-SpeechChat-Demo
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/Raon-SpeechChat-Demo/scripts/entrypoint_gateway.sh"]
+CMD ["--ray-address", "ray://fd-worker:10001", "--port", "8080", "--ws-backend", "wsproto"]

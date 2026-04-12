@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+websockets<14
+wsproto
+ray[default]==2.54.1
+numpy
