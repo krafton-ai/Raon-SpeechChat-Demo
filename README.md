@@ -1,3 +1,11 @@
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/Raon-Speechchat-Gradient-White.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/Raon-Speechchat-Gradient-Black.png">
+    <img alt="Raon-SpeechChat Logo" src="assets/Raon-Speechchat-Gradient-Black.png" width="400">
+  </picture>
+</div>
+
 # Raon SpeechChat Demo
 
 A real-time, full-duplex speech conversation demo built on the
