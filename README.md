@@ -1,3 +1,5 @@
+# Raon SpeechChat Demo
+
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/Raon-Speechchat-Gradient-White.png">
@@ -5,8 +7,6 @@
     <img alt="Raon-SpeechChat Logo" src="assets/Raon-Speechchat-Gradient-Black.png" width="400">
   </picture>
 </div>
-
-# Raon SpeechChat Demo
 
 A real-time, full-duplex speech conversation demo built on the
 [Raon-Speech](https://github.com/krafton-ai/Raon-Speech) duplex model.
