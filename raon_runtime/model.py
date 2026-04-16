@@ -23,7 +23,6 @@ from transformers import (
 )
 from transformers.models.mimi.modeling_mimi import MimiEncoderOutput
 from transformers.models.qwen3_omni_moe.configuration_qwen3_omni_moe import Qwen3OmniMoeTalkerCodePredictorConfig
-from transformers.models.qwen3_omni_moe.modeling_qwen3_omni_moe import Qwen3OmniMoeThinkerTextModel
 from transformers.utils.generic import ModelOutput
 
 from .audio_encoder.output import CausalAudioEncoderOutput
