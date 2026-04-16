@@ -42,6 +42,7 @@ cd Raon-SpeechChat-Demo
 cd frontend-next
 npm install
 npm run export        # produces out/ consumed by the gateway
+cd ..
 
 # 3. Build and start (model auto-downloads on first run)
 docker compose up -d --build
