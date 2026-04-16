@@ -10,17 +10,10 @@ SystemPromptStyle = Literal["generic", "raon", "raon_persona", "raon_persona_con
 CHANNEL_DUPLEX_TO_SYSTEM_MESSAGE = {
     "eng:full_duplex:speak-first": "You are engaging in real-time conversation.",
     "eng:full_duplex:listen-first": "You are engaging in real-time conversation.",
-    "eng:duplex_instruct:speak-first": "You are engaging in real-time conversation.",
-    "eng:duplex_instruct:listen-first": "You are engaging in real-time conversation.",
-    "kor:full_duplex:speak-first": "당신은 실시간 대화에 참여하고 있습니다.",
-    "kor:full_duplex:listen-first": "당신은 실시간 대화에 참여하고 있습니다.",
-    "kor:duplex_instruct:speak-first": "당신은 실시간 대화에 참여하고 있습니다.",
-    "kor:duplex_instruct:listen-first": "당신은 실시간 대화에 참여하고 있습니다.",
 }
 
 SYSTEM_PROMPT_BASE_BY_LANGUAGE: dict[PromptLanguage, str] = {
     "eng": "You are engaging in real-time conversation.",
-    "kor": "당신은 실시간 대화에 참여하고 있습니다.",
 }
 
 SYSTEM_PROMPT_STYLES: tuple[SystemPromptStyle, ...] = (
@@ -138,8 +131,6 @@ def build_system_prompt(
         return base
 
     if style == "raon":
-        if language == "kor":
-            return f"{base} 당신은 도움이 되는 어시스턴트입니다."
         return f"{base} You are a helpful assistant."
 
     if not persona:
@@ -148,10 +139,7 @@ def build_system_prompt(
             system_prompt_style="raon",
         )
 
-    if language == "kor":
-        prompt = f"{base} 당신은 도움이 되는 어시스턴트이고, {persona}"
-    else:
-        prompt = f"{base} You are a helpful assistant, {persona}."
+    prompt = f"{base} You are a helpful assistant, {persona}."
 
     prompt = _ensure_terminal_punctuation(prompt)
 
